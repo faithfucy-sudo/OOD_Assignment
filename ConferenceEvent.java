@@ -1,3 +1,4 @@
+package OOD_Assignment;
 public class ConferenceEvent extends Event {
 
     // 1. Attributes

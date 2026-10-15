@@ -1,4 +1,23 @@
+package OOD_Assignment;
 public class Main {
+
+    private static class ConcertEvent extends Event {
+        private final String artist;
+        private final String genre;
+
+        ConcertEvent(int eventId, String eventName, String venue,
+                     double ticketPrice, int totalSeats,
+                     String artist, String genre) {
+            super(eventId, eventName, venue, ticketPrice, totalSeats);
+            this.artist = artist;
+            this.genre = genre;
+        }
+
+        void displayConcertDetails() {
+            System.out.println("Artist: " + artist);
+            System.out.println("Genre: " + genre);
+        }
+    }
 
     public static void main(String[] args) {
 

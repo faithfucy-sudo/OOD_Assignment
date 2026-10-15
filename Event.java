@@ -1,3 +1,4 @@
+package OOD_Assignment;
 class Event {
 
     // 1. Attributes
