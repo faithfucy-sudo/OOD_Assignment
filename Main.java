@@ -1,4 +1,3 @@
-package OOD_Assignment;
 public class Main {
 
     private static class ConcertEvent extends Event {

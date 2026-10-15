@@ -1,5 +1,3 @@
-package OOD_Assignment;
-
 public class Venue {
 
     // 1. Attributes
