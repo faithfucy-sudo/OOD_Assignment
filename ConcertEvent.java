@@ -30,6 +30,13 @@ public class ConcertEvent extends Event {
         this.genre = genre;
     }
 
+    // Polymorphism: an Event reference displays concert-specific information.
+    @Override
+    public void displayEventDetails() {
+        super.displayEventDetails();
+        displayConcertDetails();
+    }
+
     // 5. Display concert details
     public void displayConcertDetails() {
         System.out.println("Performer Name: " + performerName);
