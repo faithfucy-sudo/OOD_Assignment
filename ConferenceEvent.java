@@ -32,6 +32,13 @@ public class ConferenceEvent extends Event {
         this.vipSeatingAvailable = vipSeatingAvailable;
     }
 
+    // Polymorphism: an Event reference displays conference-specific information.
+    @Override
+    public void displayEventDetails() {
+        super.displayEventDetails();
+        displayConferenceDetails();
+    }
+
     // 5. Display conference details
     public void displayConferenceDetails() {
         System.out.println("Conference Topic: " + conferenceTopic);

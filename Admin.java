@@ -1,4 +1,7 @@
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Admin {
@@ -95,7 +98,34 @@ public class Admin {
         System.out.println("Event updated successfully.");
     }
 
-    // 9. Remove event
+    // 9. Filter and order events by their upcoming schedule.
+    public List<Event> getUpcomingEvents() {
+        List<Event> upcoming = new ArrayList<>();
+        for (Event event : events) {
+            if (event.isUpcoming()) {
+                upcoming.add(event);
+            }
+        }
+        upcoming.sort(Comparator.comparing(Event::getEventDateTime));
+        return Collections.unmodifiableList(upcoming);
+    }
+
+    // 10. Admin manages an existing event's date and time.
+    public boolean updateEventSchedule(Event event, LocalDateTime newDateTime) {
+        if (event == null || !events.contains(event)) {
+            System.out.println("Event not found in admin records.");
+            return false;
+        }
+        if (newDateTime == null || !newDateTime.isAfter(LocalDateTime.now())) {
+            System.out.println("Please choose a future event date and time.");
+            return false;
+        }
+        event.setEventDateTime(newDateTime);
+        System.out.println("Event schedule updated successfully.");
+        return true;
+    }
+
+    // 11. Remove event
     public void removeEvent(int eventId) {
         Event event = findEventById(eventId);
 
