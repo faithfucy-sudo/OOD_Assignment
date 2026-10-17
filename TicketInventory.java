@@ -71,6 +71,58 @@ public class TicketInventory {
         return seatLabels(seatNumbers);
     }
 
+    // Hold the exact seat labels selected by an attendee (e.g. S1, S12).
+    // Validation takes place before any seat is locked, so an invalid request
+    // cannot leave half of a group booking locked.
+    public synchronized List<String> lockSeats(String reservationId, List<String> requestedSeats) {
+        if (reservationId == null || reservationId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Reservation ID is required.");
+        }
+        if (usedReservationIds.contains(reservationId)) {
+            throw new IllegalStateException("Reservation ID already used: " + reservationId);
+        }
+        if (requestedSeats == null || requestedSeats.isEmpty()) {
+            throw new IllegalArgumentException("Select at least one seat.");
+        }
+
+        List<Integer> seatNumbers = new ArrayList<>();
+        Set<Integer> requestedNumbers = new HashSet<>();
+        for (String label : requestedSeats) {
+            if (label == null || !label.trim().toUpperCase().matches("S[0-9]+")) {
+                throw new IllegalArgumentException("Use seat IDs such as S1 or S25.");
+            }
+            int number;
+            try {
+                number = Integer.parseInt(label.trim().substring(1));
+            } catch (NumberFormatException ex) {
+                throw new IllegalArgumentException("Invalid seat number: " + label);
+            }
+            if (number < 1 || number > totalTickets) {
+                throw new IllegalArgumentException("Seat S" + number + " does not exist.");
+            }
+            if (!requestedNumbers.add(number)) {
+                throw new IllegalArgumentException("Seat S" + number + " was selected twice.");
+            }
+            if (reservedSeats.contains(number) || lockedSeats.contains(number)) {
+                throw new IllegalArgumentException("Seat S" + number + " is already taken.");
+            }
+            seatNumbers.add(number);
+        }
+
+        locksByReservation.put(reservationId, seatNumbers);
+        usedReservationIds.add(reservationId);
+        lockedSeats.addAll(seatNumbers);
+        return seatLabels(seatNumbers);
+    }
+
+    // A short preview avoids printing hundreds of seat IDs at once.
+    public synchronized List<String> previewAvailableSeats(int limit) {
+        if (limit <= 0) {
+            return Collections.emptyList();
+        }
+        return seatLabels(findFreeSeats(limit));
+    }
+
     // Only a successful payment converts the lock into a confirmed booking.
     public synchronized boolean confirmLockedSeats(String reservationId) {
         List<Integer> seatNumbers = locksByReservation.remove(reservationId);

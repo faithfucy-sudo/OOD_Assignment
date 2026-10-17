@@ -17,6 +17,11 @@ class Event {
     // 2. Constructor
     public Event(int eventId, String title, String venueName,
                  double baseTicketPrice, int maxCapacity) {
+        if (eventId <= 0 || maxCapacity <= 0) {
+            throw new IllegalArgumentException("Event ID and capacity must be positive.");
+        }
+        validateNonBlank(title, "Event title");
+        validateNonBlank(venueName, "Venue name");
         this.eventId = eventId;
         this.title = title;
         this.venueName = venueName;
@@ -42,8 +47,19 @@ class Event {
 
     // 4. Setters
     public void setEventId(int eventId) { this.eventId = eventId; }
-    public void setTitle(String title) { this.title = title; }
-    public void setVenueName(String venueName) { this.venueName = venueName; }
+    public void setTitle(String title) {
+        validateNonBlank(title, "Event title");
+        this.title = title.trim();
+    }
+    public void setVenueName(String venueName) {
+        validateNonBlank(venueName, "Venue name");
+        this.venueName = venueName.trim();
+    }
+    private static void validateNonBlank(String value, String field) {
+        if (value == null || value.trim().isEmpty()) {
+            throw new IllegalArgumentException(field + " cannot be empty.");
+        }
+    }
     public void setBaseTicketPrice(double baseTicketPrice) {
         validatePrice(baseTicketPrice);
         this.baseTicketPrice = baseTicketPrice;
@@ -65,6 +81,9 @@ class Event {
     }
 
     public void setMaxCapacity(int maxCapacity) {
+        if (maxCapacity <= 0) {
+            throw new IllegalArgumentException("Capacity must be positive.");
+        }
         // Never reset inventory while seats are reserved or locked.
         if (ticketInventory.getReservedTickets() > 0 ||
             ticketInventory.getLockedTickets() > 0) {
