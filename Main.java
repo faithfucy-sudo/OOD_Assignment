@@ -1,5 +1,23 @@
 public class Main {
 
+    private static class ConcertEvent extends Event {
+        private final String artist;
+        private final String genre;
+
+        ConcertEvent(int eventId, String eventName, String venue,
+                     double ticketPrice, int totalSeats,
+                     String artist, String genre) {
+            super(eventId, eventName, venue, ticketPrice, totalSeats);
+            this.artist = artist;
+            this.genre = genre;
+        }
+
+        void displayConcertDetails() {
+            System.out.println("Artist: " + artist);
+            System.out.println("Genre: " + genre);
+        }
+    }
+
     public static void main(String[] args) {
 
         // 1. Create a normal Event
@@ -22,7 +40,8 @@ public class Main {
         );
 
         System.out.println("\nConcert Details:");
-        concert.displayEventDetails(); // overridden method also prints performer and genre
+        concert.displayEventDetails();
+        concert.displayConcertDetails();
 
 
         // 4. Create a ConferenceEvent
@@ -32,7 +51,8 @@ public class Main {
         );
 
         System.out.println("\nConference Details:");
-        conference.displayEventDetails(); // overridden method also prints conference details
+        conference.displayEventDetails();
+        conference.displayConferenceDetails();
 
 
         // 5. Create a Venue
@@ -46,7 +66,7 @@ public class Main {
 
         // 6. Create an Admin
         Admin admin = new Admin(
-            301, "Faith FU", "faith@gmail.com"
+            301, "Faith Fu", "faith@gmail.com"
         );
 
         System.out.println("\nAdmin Details:");
