@@ -65,8 +65,21 @@ public class TicketReservation {
         return amount;
     }
 
-    // Step 1: lock specific seats before checkout.
+    // Step 1a: automatically allocate the first available seats (legacy flow).
     public boolean lockSeats() {
+        return lockSeatRequest(null);
+    }
+
+    // Step 1b: allow the attendee to select exact seats in the console.
+    public boolean lockSeats(List<String> requestedSeats) {
+        if (requestedSeats == null || requestedSeats.size() != quantity) {
+            System.out.println("Please select exactly " + quantity + " seat(s).");
+            return false;
+        }
+        return lockSeatRequest(requestedSeats);
+    }
+
+    private boolean lockSeatRequest(List<String> requestedSeats) {
         if (!status.equals("PENDING")) {
             System.out.println("Cannot lock seats for a " + status + " reservation.");
             return false;
@@ -78,15 +91,19 @@ public class TicketReservation {
         }
         List<String> heldSeats;
         try {
-            heldSeats = event.getTicketInventory().lockSeats(reservationId, quantity);
+            heldSeats = requestedSeats == null
+                ? event.getTicketInventory().lockSeats(reservationId, quantity)
+                : event.getTicketInventory().lockSeats(reservationId, requestedSeats);
+        } catch (IllegalArgumentException ex) {
+            System.out.println("Invalid seat selection: " + ex.getMessage());
+            return false;
         } catch (IllegalStateException ex) {
             status = "DUPLICATE_ID";
             System.out.println("Cannot lock seats: " + ex.getMessage());
             return false;
         }
         if (heldSeats.isEmpty()) {
-            status = "UNAVAILABLE";
-            System.out.println("Not enough seats available.");
+            System.out.println("Not enough seats available. Please choose another selection.");
             return false;
         }
         seatAssignments.addAll(heldSeats);

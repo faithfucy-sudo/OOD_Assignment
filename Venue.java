@@ -9,10 +9,10 @@ public class Venue {
     // 2. Constructor
     public Venue(int venueId, String venueName,
                  String location, int capacity) {
-        this.venueId = venueId;
-        this.venueName = venueName;
-        this.location = location;
-        this.capacity = capacity;
+        setVenueId(venueId);
+        setVenueName(venueName);
+        setLocation(location);
+        setCapacity(capacity);
     }
 
     // 3. Getters
@@ -31,15 +31,21 @@ public class Venue {
 
     // 4. Setters
     public void setVenueId(int venueId) {
+        if (venueId <= 0) throw new IllegalArgumentException("Venue ID must be positive.");
         this.venueId = venueId;
     }
     public void setVenueName(String venueName) {
-        this.venueName = venueName;
+        if (venueName == null || venueName.trim().isEmpty())
+            throw new IllegalArgumentException("Venue name cannot be empty.");
+        this.venueName = venueName.trim();
     }
     public void setLocation(String location) {
-        this.location = location;
+        if (location == null || location.trim().isEmpty())
+            throw new IllegalArgumentException("Venue location cannot be empty.");
+        this.location = location.trim();
     }
     public void setCapacity(int capacity) {
+        if (capacity <= 0) throw new IllegalArgumentException("Venue capacity must be positive.");
         this.capacity = capacity;
     }
 
