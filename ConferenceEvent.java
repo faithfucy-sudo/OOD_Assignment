@@ -42,7 +42,6 @@ public class ConferenceEvent extends Event {
     // 5. Display conference details
     public void displayConferenceDetails() {
         System.out.println("Conference Topic: " + conferenceTopic);
-        System.out.println("VIP Seating Available: " + vipSeatingAvailable);
     }
 }
 
